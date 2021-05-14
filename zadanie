@@ -1,2 +1,6 @@
-myszka
+import geopandas
+import shapely
+import plotly as plt
+import numpy as np
+
 
