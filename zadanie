@@ -60,3 +60,8 @@ ax.set_axis_off()
 plt.axis('equal');
 plt.title('liczba ludności w siatce')
 
+#pkt1
+
+#pkt2
+
+#pkt3
