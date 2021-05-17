@@ -2,12 +2,12 @@ import geopandas
 import shapely
 import plotly as plt
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 #1. wczytywanie danych
 gdf = geopandas.read_file('PD_STAT_GRID_CELL_2011.shp')
-gdf.to_crs("EPSG:4326")
-gdf.plot("TOT",legend=True)
+#gdf.to_crs("EPSG:4326")
+#gdf.plot("TOT",legend=True)
 #woj = geopandas.read_file('wojewodztwa.shp') ???
 
 #2. układ
@@ -20,7 +20,7 @@ gdf['centroid'] = gdf.centroid
 
 #4. wyznaczenie regularnej siatki fishnet
 #
-xmin, ymin, xmax, ymax= [13 ,48 , 25, 56] 
+xmin, ymin, xmax, ymax= gdf.total_bounds
 #
 n_cells=30
 cell_size = (xmax-xmin)/n_cells 
@@ -32,14 +32,13 @@ for x0 in np.arange(xmin, xmax+cell_size, cell_size ):
         x1 = x0-cell_size
         y1 = y0+cell_size
         grid_cells.append( shapely.geometry.box(x0, y0, x1, y1) )
-cell = geopandas.GeoDataFrame(grid_cells, columns=['geometry'])
+cell = geopandas.GeoDataFrame(grid_cells, columns=['geometry'], crs = 'EPSG:2180)
 
 ax = gdf.plot(markersize=.1, figsize=(12, 8), column='TOT', cmap='jet')
-
 plt.autoscale(False)
 cell.plot(ax=ax, facecolor="none", edgecolor='grey') 
 ax.axis("off")
-
+plt.show()
 
 #6. spatial join
 merged = geopandas.sjoin(gdf, cell, how='left', op='within')
@@ -48,19 +47,18 @@ merged = geopandas.sjoin(gdf, cell, how='left', op='within')
 #7. agregacja
 dissolve = merged.dissolve(by="index_right", aggfunc="sum")
 
-
+#pkt1
 #8. przypisanie wartości do oczek siatki
-cell.loc[dissolve.index, 'TOT'] = dissolve.TOT.values
+cell.loc[dissolve.index, 'TOT_0_14'] = dissolve.TOT_0_14.values
 
 
 #9. wizualizacja
-ax = cell.plot(column='TOT', figsize=(12, 8), cmap='viridis', vmax=700000, edgecolor="grey", legend = True)
+ax = cell.plot(column='TOT_0_14', figsize=(12, 8), cmap='viridis', vmax=700000, edgecolor="grey", legend = True)
 plt.autoscale(False)
 ax.set_axis_off()
 plt.axis('equal');
-plt.title('liczba ludności w siatce')
+plt.title('Liczba ludności od lat 14 w siatce')
 
-#pkt1
 
 #pkt2
 
