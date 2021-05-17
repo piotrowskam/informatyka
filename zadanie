@@ -57,9 +57,15 @@ ax = cell.plot(column='TOT_0_14', figsize=(12, 8), cmap='viridis', vmax=700000, 
 plt.autoscale(False)
 ax.set_axis_off()
 plt.axis('equal');
-plt.title('Liczba ludności od lat 14 w siatce')
+plt.title('Liczba ludności do lat 14 w siatce')
 
 
 #pkt2
+cell.loc[dissolve.index, 'TOT_15_64'] = dissolve.TOT_15_64.values
+ax = cell.plot(column='TOT_15_64', figsize=(12, 8), cmap='viridis', vmax=700000, edgecolor="blue", legend = True)
+plt.autoscale(False)
+ax.set_axis_off()
+plt.axis('equal');
+plt.title('Liczba ludności w przedziale wiekowym 15-64 w siatce')
 
 #pkt3
